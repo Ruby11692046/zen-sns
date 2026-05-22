@@ -1,0 +1,68 @@
+/* ========================================
+   Timeline Page Styles
+   ======================================== */
+
+.timeline {
+  background: var(--color-bg-secondary);
+  min-height: 100dvh;
+}
+
+.timeline__header {
+  justify-content: flex-start;
+  gap: var(--space-3);
+}
+
+.timeline__logo-text {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.05em;
+}
+
+.page-header__menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+}
+
+/* New posts banner */
+.timeline__new-banner {
+  position: sticky;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent-gradient);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  animation: slideDown var(--transition-base) ease-out;
+}
+
+.timeline__new-banner:hover {
+  opacity: 0.9;
+}
+
+/* Feed */
+.timeline__feed {
+  /* No extra styles needed, PostCard handles borders */
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 768px) {
+  .page-header__menu-btn {
+    display: none;
+  }
+}

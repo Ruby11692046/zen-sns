@@ -1,0 +1,9 @@
+/* ========================================
+   App Layout Styles
+   ======================================== */
+
+/* The sidebar component already has its own styles imported.
+   This file handles app-level layout overrides only. */
+
+/* Sidebar is duplicated in the DOM as a wrapper div,
+   so the actual component's CSS handles positioning */

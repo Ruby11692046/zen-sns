@@ -1,0 +1,149 @@
+/* ========================================
+   Search Page Styles
+   ======================================== */
+
+.search {
+  background: var(--color-bg-secondary);
+  min-height: 100dvh;
+}
+
+/* Search input */
+.search__header {
+  gap: var(--space-2);
+}
+
+.search__input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.search__input-wrapper:focus-within {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.search__input-icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.search__input {
+  flex: 1;
+  font-size: var(--text-sm);
+  padding: var(--space-1) 0;
+}
+
+.search__input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.search__input-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-tertiary);
+  transition: all var(--transition-fast);
+}
+
+.search__input-clear:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* History */
+.search__history {
+  padding: var(--space-4);
+}
+
+.search__history-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.search__history-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-fast);
+  text-align: left;
+}
+
+.search__history-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.search__history-icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* Account results */
+.search__accounts {
+  padding: var(--space-2) 0;
+}
+
+.search__account-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  transition: background-color var(--transition-fast);
+  text-align: left;
+}
+
+.search__account-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.search__account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.search__account-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.search__account-id {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.search__account-bio {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+/* Empty state */
+.search__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}

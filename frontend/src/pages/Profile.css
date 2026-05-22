@@ -1,0 +1,124 @@
+/* ========================================
+   Profile Page Styles
+   ======================================== */
+
+.profile {
+  background: var(--color-bg-secondary);
+  min-height: 100dvh;
+}
+
+/* Banner */
+.profile__banner {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+}
+
+.profile__banner-gradient {
+  width: 100%;
+  height: 100%;
+  background: var(--color-accent-gradient);
+  opacity: 0.8;
+}
+
+/* Info section */
+.profile__info {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.profile__info-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: -40px;
+}
+
+.profile__avatar {
+  border: 4px solid var(--color-bg-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.profile__actions {
+  margin-top: calc(40px + var(--space-3));
+}
+
+.profile__details {
+  margin-top: var(--space-3);
+}
+
+.profile__name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.profile__userid {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+.profile__bio {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-3);
+}
+
+/* Stats */
+.profile__stats {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.profile__stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  transition: opacity var(--transition-fast);
+}
+
+.profile__stat:hover {
+  opacity: 0.7;
+}
+
+.profile__stat-value {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.profile__stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Edit form */
+.profile__edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+  animation: scaleIn var(--transition-fast) ease-out;
+}
+
+.profile__edit-bio {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.profile__edit-actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+/* Empty states */
+.profile__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}

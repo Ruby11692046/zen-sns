@@ -1,0 +1,80 @@
+/* ========================================
+   BottomNav Component Styles (Mobile Only)
+   ======================================== */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: stretch;
+  height: var(--bottom-nav-height);
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--color-divider);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+.bottom-nav__item.active {
+  color: var(--color-accent);
+}
+
+.bottom-nav__item:active {
+  transform: scale(0.92);
+}
+
+.bottom-nav__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.bottom-nav__badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  transform: scale(0.85);
+}
+
+.bottom-nav__label {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Active indicator dot */
+.bottom-nav__item.active::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-gradient);
+}
+
+/* Hide on tablet and up */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}

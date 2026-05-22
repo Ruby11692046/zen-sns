@@ -1,0 +1,208 @@
+/* ========================================
+   Sidebar Component Styles
+   ======================================== */
+
+.sidebar {
+  display: none; /* Hidden on mobile */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100dvh;
+  z-index: var(--z-nav);
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid var(--color-divider);
+  overflow-y: auto;
+}
+
+.sidebar__inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-6) var(--space-4);
+  gap: var(--space-2);
+}
+
+.sidebar__close {
+  display: none;
+  align-self: flex-end;
+  padding: var(--space-2);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast);
+}
+
+.sidebar__close:hover {
+  background: var(--color-bg-hover);
+}
+
+/* Logo */
+.sidebar__logo {
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.sidebar__logo-text {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.05em;
+}
+
+/* Account */
+.sidebar__account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--transition-fast);
+  margin-bottom: var(--space-4);
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar__account:hover {
+  background: var(--color-bg-hover);
+}
+
+.sidebar__account-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar__account-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.sidebar__account-id {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Navigation */
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.sidebar__nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar__nav-item:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.sidebar__nav-item.active {
+  background: var(--color-bg-active);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.sidebar__nav-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.sidebar__nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+}
+
+.sidebar__nav-label {
+  white-space: nowrap;
+}
+
+/* Logout */
+.sidebar__logout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  margin-top: auto;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar__logout:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: var(--color-error);
+}
+
+/* --- Mobile drawer overlay --- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--z-nav) - 1);
+  backdrop-filter: blur(4px);
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile: sidebar as drawer */
+@media (max-width: 767px) {
+  .sidebar {
+    display: flex;
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar__close {
+    display: flex;
+  }
+}
+
+/* Tablet and up: always visible */
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+  }
+}

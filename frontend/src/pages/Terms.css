@@ -1,0 +1,59 @@
+/* ========================================
+   Terms Page Styles
+   ======================================== */
+
+.terms {
+  background: var(--color-bg-secondary);
+  min-height: 100dvh;
+}
+
+.terms__content {
+  padding: var(--space-4);
+}
+
+.terms__document {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.terms__document h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.terms__updated {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-6);
+}
+
+.terms__document section {
+  margin-bottom: var(--space-6);
+}
+
+.terms__document h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.terms__document p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+.terms__document ul {
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+
+.terms__document li {
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
