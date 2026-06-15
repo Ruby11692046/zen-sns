@@ -1,46 +1,48 @@
 /* ========================================
-   Report Page Styles
+   Report Page Styles (Neumorphic)
    ======================================== */
 
 .report {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
   min-height: 100dvh;
 }
 
 .report__content {
-  padding: var(--space-4);
+  padding: var(--space-5) var(--space-4);
 }
 
 .report__desc {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  line-height: var(--leading-relaxed);
+  padding: 0 var(--space-2);
 }
 
 .report__items {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .report__item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-xl);
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-flat);
   border: 1px solid var(--color-border);
   text-decoration: none;
   color: inherit;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
 .report__item:hover {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-neu-pressed-sm);
   color: inherit;
+  transform: translateY(1px);
 }
 
 .report__item-icon {
@@ -49,8 +51,10 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-lg);
-  background: var(--color-accent-light);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  border: 1px solid var(--color-border);
   color: var(--color-accent);
   flex-shrink: 0;
 }
@@ -65,7 +69,7 @@
 
 .report__item-title {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 

@@ -1,96 +1,107 @@
 /* ========================================
-   Profile Page Styles
+   Profile Page Styles (Neumorphic)
    ======================================== */
 
 .profile {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
   min-height: 100dvh;
 }
 
 /* Banner */
 .profile__banner {
   position: relative;
-  height: 120px;
+  height: 130px;
   overflow: hidden;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-neu-flat-sm);
 }
 
 .profile__banner-gradient {
   width: 100%;
   height: 100%;
   background: var(--color-accent-gradient);
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 /* Info section */
 .profile__info {
-  padding: 0 var(--space-4) var(--space-4);
+  padding: 0 var(--space-5) var(--space-5);
 }
 
 .profile__info-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-top: -40px;
+  margin-top: -42px;
 }
 
 .profile__avatar {
-  border: 4px solid var(--color-bg-secondary);
-  box-shadow: var(--shadow-md);
+  border: 4px solid var(--color-bg-primary) !important;
 }
 
 .profile__actions {
-  margin-top: calc(40px + var(--space-3));
+  margin-top: calc(42px + var(--space-4));
 }
 
 .profile__details {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .profile__name {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 700;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
 }
 
 .profile__userid {
   font-size: var(--text-sm);
   color: var(--color-text-tertiary);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-weight: 500;
 }
 
 .profile__bio {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--color-text-secondary);
   line-height: var(--leading-relaxed);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
-/* Stats */
+/* Stats (Neumorphic segmented buttons) */
 .profile__stats {
   display: flex;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 .profile__stat {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-1);
-  transition: opacity var(--transition-fast);
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
 }
 
 .profile__stat:hover {
-  opacity: 0.7;
+  box-shadow: var(--shadow-neu-pressed-sm);
+  color: var(--color-accent);
 }
 
 .profile__stat-value {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .profile__stat-label {
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 /* Edit form */
@@ -98,22 +109,22 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  margin: var(--space-3) 0;
+  margin: var(--space-4) 0;
   animation: scaleIn var(--transition-fast) ease-out;
 }
 
 .profile__edit-bio {
   resize: vertical;
-  min-height: 60px;
+  min-height: 80px;
 }
 
 .profile__edit-actions {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-3);
   justify-content: flex-end;
 }
 
-/* Empty states */
+/* Empty states (pressed neumorphic) */
 .profile__empty {
   display: flex;
   align-items: center;
@@ -121,4 +132,13 @@
   padding: var(--space-12) var(--space-4);
   color: var(--color-text-tertiary);
   font-size: var(--text-sm);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  border: 1.5px solid var(--color-border);
+  margin: var(--space-4);
+}
+
+.profile__feed {
+  padding-bottom: var(--space-6);
 }

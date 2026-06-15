@@ -1,5 +1,5 @@
 /* ========================================
-   Sidebar Component Styles
+   Sidebar Component Styles (Neumorphic)
    ======================================== */
 
 .sidebar {
@@ -10,11 +10,15 @@
   width: var(--sidebar-width);
   height: 100dvh;
   z-index: var(--z-nav);
-  background: var(--color-bg-glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid var(--color-divider);
+  background: var(--color-bg-primary);
+  border-right: 1.5px solid var(--color-border);
+  box-shadow: 4px 0 16px rgba(165, 175, 190, 0.25);
   overflow-y: auto;
+}
+
+[data-theme="dark"] .sidebar {
+  box-shadow: 4px 0 16px rgba(6, 8, 13, 0.5);
+  border-right-color: var(--color-border);
 }
 
 .sidebar__inner {
@@ -22,7 +26,7 @@
   flex-direction: column;
   height: 100%;
   padding: var(--space-6) var(--space-4);
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .sidebar__close {
@@ -31,11 +35,14 @@
   padding: var(--space-2);
   border-radius: var(--radius-full);
   color: var(--color-text-secondary);
-  transition: background-color var(--transition-fast);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
 }
 
 .sidebar__close:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
 }
 
 /* Logo */
@@ -47,7 +54,7 @@
 .sidebar__logo-text {
   font-family: var(--font-display);
   font-size: var(--text-2xl);
-  font-weight: 700;
+  font-weight: 800;
   background: var(--color-accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -55,21 +62,24 @@
   letter-spacing: 0.05em;
 }
 
-/* Account */
+/* Account (隆起する Neumorphic Card) */
 .sidebar__account {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3);
+  padding: var(--space-4) var(--space-3);
   border-radius: var(--radius-lg);
-  transition: background-color var(--transition-fast);
-  margin-bottom: var(--space-4);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+  margin-bottom: var(--space-5);
   text-align: left;
   width: 100%;
 }
 
 .sidebar__account:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
 }
 
 .sidebar__account-info {
@@ -80,46 +90,52 @@
 
 .sidebar__account-name {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .sidebar__account-id {
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
+  margin-top: 1px;
 }
 
 /* Navigation */
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-3);
   flex: 1;
 }
 
 .sidebar__nav-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   color: var(--color-text-secondary);
   font-size: var(--text-base);
-  font-weight: 500;
-  transition: all var(--transition-fast);
+  font-weight: 600;
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1.5px solid var(--color-border);
+  transition: all var(--transition-base);
   width: 100%;
   text-align: left;
 }
 
 .sidebar__nav-item:hover {
-  background: var(--color-bg-hover);
   color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
 .sidebar__nav-item.active {
-  background: var(--color-bg-active);
+  background: var(--color-bg-secondary);
   color: var(--color-accent);
-  font-weight: 600;
+  box-shadow: var(--shadow-neu-pressed-sm);
+  border-color: transparent;
+  transform: translateY(0);
 }
 
 .sidebar__nav-icon {
@@ -141,25 +157,29 @@
   white-space: nowrap;
 }
 
-/* Logout */
+/* Logout (Neumorphic Danger Button) */
 .sidebar__logout {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  color: var(--color-text-tertiary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
   font-size: var(--text-sm);
-  font-weight: 500;
-  transition: all var(--transition-fast);
+  font-weight: 600;
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
   margin-top: auto;
   width: 100%;
   text-align: left;
 }
 
 .sidebar__logout:hover {
-  background: rgba(239, 68, 68, 0.06);
+  box-shadow: var(--shadow-neu-pressed-sm);
   color: var(--color-error);
+  background: rgba(239, 68, 68, 0.02);
 }
 
 /* --- Mobile drawer overlay --- */
@@ -167,9 +187,9 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   z-index: calc(var(--z-nav) - 1);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   animation: fadeIn var(--transition-fast) ease-out;
 }
 
@@ -188,7 +208,11 @@
     display: flex;
     transform: translateX(-100%);
     transition: transform var(--transition-base);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 8px 0 24px rgba(0,0,0,0.15);
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-right: none;
   }
 
   .sidebar.open {

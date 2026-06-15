@@ -1,15 +1,15 @@
 /* ========================================
-   Search Page Styles
+   Search Page Styles (Neumorphic)
    ======================================== */
 
 .search {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
   min-height: 100dvh;
 }
 
-/* Search input */
+/* Search input wrapper (Neumorphic Pressed) */
 .search__header {
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .search__input-wrapper {
@@ -17,17 +17,17 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  background: var(--color-bg-tertiary);
+  background: var(--color-bg-secondary);
   border-radius: var(--radius-full);
-  padding: var(--space-2) var(--space-3);
-  border: 1.5px solid transparent;
-  transition: all var(--transition-fast);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-neu-pressed-sm);
+  transition: all var(--transition-base);
 }
 
 .search__input-wrapper:focus-within {
-  background: var(--color-bg-secondary);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-light);
+  border-color: var(--color-accent-light);
+  box-shadow: var(--shadow-neu-pressed-sm), 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
 .search__input-icon {
@@ -39,6 +39,7 @@
   flex: 1;
   font-size: var(--text-sm);
   padding: var(--space-1) 0;
+  color: var(--color-text-primary);
 }
 
 .search__input::placeholder {
@@ -53,41 +54,49 @@
   height: 24px;
   border-radius: var(--radius-full);
   color: var(--color-text-tertiary);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
   transition: all var(--transition-fast);
 }
 
 .search__input-clear:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
   color: var(--color-text-primary);
 }
 
-/* History */
+/* History (Neumorphic chips) */
 .search__history {
-  padding: var(--space-4);
+  padding: var(--space-5) var(--space-4);
 }
 
 .search__history-title {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-2);
 }
 
 .search__history-item {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
-  padding: var(--space-3);
-  border-radius: var(--radius-lg);
+  width: calc(100% - var(--space-4));
+  margin: var(--space-2) var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
   font-size: var(--text-sm);
   color: var(--color-text-primary);
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-base);
   text-align: left;
 }
 
 .search__history-item:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
 }
 
 .search__history-icon {
@@ -95,23 +104,28 @@
   flex-shrink: 0;
 }
 
-/* Account results */
+/* Account results (Neumorphic Cards) */
 .search__accounts {
-  padding: var(--space-2) 0;
+  padding: var(--space-3) 0;
 }
 
 .search__account-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  transition: background-color var(--transition-fast);
+  gap: var(--space-4);
+  margin: var(--space-3) var(--space-4) var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
   text-align: left;
 }
 
 .search__account-item:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  transform: translateY(1px);
 }
 
 .search__account-info {
@@ -123,7 +137,7 @@
 
 .search__account-name {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
@@ -135,10 +149,10 @@
 .search__account-bio {
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
-  margin-top: 2px;
+  margin-top: var(--space-1);
 }
 
-/* Empty state */
+/* Empty state (Neumorphic Inset Panel) */
 .search__empty {
   display: flex;
   align-items: center;
@@ -146,4 +160,9 @@
   padding: var(--space-12) var(--space-4);
   color: var(--color-text-tertiary);
   font-size: var(--text-sm);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin: var(--space-4);
 }
