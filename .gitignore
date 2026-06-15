@@ -1,1 +1,31 @@
+# Git ignore at root level
+
+# Schedule (already ignored)
 docs/Schedule.md
+
+# Environment variables
+.env
+.env.local
+.env.*
+*.env
+
+# Python build and cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Local Database (SQLite)
+*.db
+*.sqlite3
+
+# Node modules and build output at root or subfolders
+node_modules/
+dist/
+.DS_Store
+.lh/

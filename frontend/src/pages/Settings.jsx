@@ -8,7 +8,7 @@ const THEME_OPTIONS = [
   { id: 'dark', label: 'ダークモード', icon: Moon },
 ];
 
-export default function Settings({ onNavigate }) {
+export default function Settings({ onNavigate, onLogout }) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('zen-theme') || 'system';
   });
@@ -66,7 +66,7 @@ export default function Settings({ onNavigate }) {
         <section className="settings__section">
           <button
             className="settings__logout-btn"
-            onClick={() => onNavigate('login')}
+            onClick={onLogout}
             id="settings-logout"
           >
             <LogOut size={20} />

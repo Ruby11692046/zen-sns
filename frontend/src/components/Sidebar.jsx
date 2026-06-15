@@ -20,9 +20,9 @@ const NAV_ITEMS = [
   { id: 'terms', label: '利用規約', icon: FileText },
 ];
 
-export default function Sidebar({ currentScreen, onNavigate, user, onClose }) {
+export default function Sidebar({ currentScreen, onNavigate, user, isOpen, onClose }) {
   return (
-    <aside className="sidebar" id="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`} id="sidebar">
       <div className="sidebar__inner">
         {/* Close button (mobile) */}
         <button className="sidebar__close" onClick={onClose} aria-label="サイドバーを閉じる">

@@ -39,7 +39,7 @@
 | メソッド | URI | 概要 |
 |----------|-----|------|
 | POST | `/posts` | 投稿作成 |
-| GET | `/posts/{post_id}` | 投稿詳細取得 |
+| ç |
 | DELETE | `/posts/{post_id}` | 投稿削除 |
 | POST | `/posts/{post_id}/likes` | いいね |
 | DELETE | `/posts/{post_id}/likes` | いいね取消 |

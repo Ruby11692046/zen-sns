@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy>=2.0.30
+psycopg[binary]
+pyjwt
+python-multipart
+requests
+python-dotenv
+pydantic
+pydantic-settings
+email-validator

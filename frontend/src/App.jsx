@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import BottomNav from './components/BottomNav';
 import Login from './pages/Login';
@@ -10,7 +10,8 @@ import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
 import Report from './pages/Report';
 import Terms from './pages/Terms';
-import { CURRENT_USER } from './data/mockData';
+import api, { tokenStorage } from './services/api';
+import { authService } from './services/authService';
 import './App.css';
 
 export default function App() {
@@ -18,7 +19,12 @@ export default function App() {
   const [screenParams, setScreenParams] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [history, setHistory] = useState([]);
+  
+  // ログイン中のユーザー情報を管理するステート
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // 画面遷移関数
   const navigate = useCallback((screen, params = {}) => {
     setHistory((prev) => [...prev, { screen: currentScreen, params: screenParams }]);
     setCurrentScreen(screen);
@@ -26,6 +32,7 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [currentScreen, screenParams]);
 
+  // 前の画面に戻る関数
   const goBack = useCallback(() => {
     const prev = history[history.length - 1];
     if (prev) {
@@ -38,15 +45,75 @@ export default function App() {
     }
   }, [history]);
 
-  const handleLogin = () => {
-    navigate('timeline');
+  // 現在ログイン中のユーザー情報をバックエンドから取得して復元する
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await api.get('/users/me');
+      setCurrentUser(response.data);
+      setCurrentScreen('timeline');
+    } catch (err) {
+      console.error('Failed to fetch current user profile:', err);
+      // エラー時はセッションをクリアしてログイン画面へ
+      handleLogout();
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Login screen has no sidebar/nav
+  // ログイン成功時のハンドラー
+  const handleLogin = () => {
+    setLoading(true);
+    fetchCurrentUser();
+  };
+
+  // ログアウトのハンドラー
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setCurrentUser(null);
+      setCurrentScreen('login');
+      setHistory([]);
+    }
+  };
+
+  // 初期ロード時：すでに有効なトークンがあるかチェック
+  useEffect(() => {
+    if (authService.isAuthenticated()) {
+      fetchCurrentUser();
+    } else {
+      setLoading(false);
+    }
+
+    // セッション切れイベントの監視
+    const handleSessionExpired = () => {
+      alert('セッションの有効期限が切れました。再度ログインしてください。');
+      handleLogout();
+    };
+
+    window.addEventListener('auth_session_expired', handleSessionExpired);
+    return () => {
+      window.removeEventListener('auth_session_expired', handleSessionExpired);
+    };
+  }, []);
+
+  // ロード中表示
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}>
+        <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>読み込み中...</div>
+      </div>
+    );
+  }
+
+  // ログイン画面はサイドバーやナビゲーションを表示しない
   if (currentScreen === 'login') {
     return <Login onLogin={handleLogin} />;
   }
 
+  // 画面のレンダリング
   const renderScreen = () => {
     switch (currentScreen) {
       case 'timeline':
@@ -54,7 +121,7 @@ export default function App() {
           <Timeline
             onNavigate={navigate}
             onOpenSidebar={() => setSidebarOpen(true)}
-            user={CURRENT_USER}
+            user={currentUser}
           />
         );
       case 'postDetail':
@@ -78,7 +145,8 @@ export default function App() {
       case 'notifications':
         return <Notifications onNavigate={navigate} />;
       case 'settings':
-        return <Settings onNavigate={navigate} />;
+        // 設定画面でログアウト処理を渡せるようにする
+        return <Settings onNavigate={navigate} onLogout={handleLogout} />;
       case 'report':
         return <Report />;
       case 'terms':
@@ -88,7 +156,7 @@ export default function App() {
           <Timeline
             onNavigate={navigate}
             onOpenSidebar={() => setSidebarOpen(true)}
-            user={CURRENT_USER}
+            user={currentUser}
           />
         );
     }
@@ -105,14 +173,13 @@ export default function App() {
       )}
 
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <Sidebar
-          currentScreen={currentScreen}
-          onNavigate={navigate}
-          user={CURRENT_USER}
-          onClose={() => setSidebarOpen(false)}
-        />
-      </div>
+      <Sidebar
+        currentScreen={currentScreen}
+        onNavigate={navigate}
+        user={currentUser}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       {/* Main */}
       <main className="app-main">
