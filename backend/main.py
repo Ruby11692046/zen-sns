@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth, users
+from routers import auth, users, posts, timelines, follows, blocks
 
 # テーブルを自動作成
 Base.metadata.create_all(bind=engine)
@@ -24,6 +24,10 @@ app.add_middleware(
 # ルーターの登録
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
+app.include_router(posts.router, prefix="/api/v1")
+app.include_router(timelines.router, prefix="/api/v1")
+app.include_router(follows.router, prefix="/api/v1")
+app.include_router(blocks.router, prefix="/api/v1")
 
 @app.get("/")
 def read_root():

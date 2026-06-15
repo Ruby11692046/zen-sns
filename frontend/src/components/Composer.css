@@ -1,38 +1,50 @@
 /* ========================================
-   Composer Component Styles
+   Composer Component Styles (Neumorphic)
    ======================================== */
 
 .composer {
   display: flex;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--color-divider);
+  gap: var(--space-4);
+  padding: var(--space-5);
   background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-flat);
+  border: 1px solid var(--color-border);
+  margin: var(--space-5) var(--space-4) var(--space-2);
+  transition: all var(--transition-base);
 }
 
 .composer__avatar {
   flex-shrink: 0;
-  margin-top: var(--space-1);
+  margin-top: var(--space-2);
 }
 
 .composer__input-area {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .composer__textarea {
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   max-height: 200px;
-  padding: var(--space-2) 0;
+  padding: var(--space-3) var(--space-4);
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
   color: var(--color-text-primary);
   resize: none;
-  border: none;
-  outline: none;
-  background: transparent;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neu-pressed);
+  transition: all var(--transition-base);
   field-sizing: content;
+}
+
+.composer__textarea:focus {
+  box-shadow: var(--shadow-neu-pressed), 0 0 0 2px var(--color-accent-light);
 }
 
 .composer__textarea::placeholder {
@@ -45,9 +57,10 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  background: var(--color-bg-tertiary);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-pressed-sm);
   border-radius: var(--radius-md);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
 .composer__image-name {
@@ -61,15 +74,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: var(--radius-full);
   color: var(--color-text-tertiary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
   transition: all var(--transition-fast);
 }
 
 .composer__image-remove:hover {
-  background: var(--color-bg-hover);
+  box-shadow: var(--shadow-neu-pressed-sm);
   color: var(--color-text-primary);
 }
 
@@ -78,7 +93,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: var(--space-2);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--color-divider);
 }
 
@@ -86,53 +101,63 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2);
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-full);
   color: var(--color-accent);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-flat-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
 }
 
 .composer__tool-btn:hover {
+  box-shadow: var(--shadow-neu-pressed-sm);
   background: var(--color-accent-light);
 }
 
 .composer__submit {
-  min-width: 72px;
+  min-width: 80px;
 }
 
 .composer__submit:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
+  box-shadow: none !important;
   cursor: not-allowed;
   transform: none !important;
 }
 
-/* Muted state */
+/* Muted state (pressed inset card) */
 .composer--muted {
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
-  background: var(--color-bg-tertiary);
-  opacity: 0.7;
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-pressed);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin: var(--space-5) var(--space-4) var(--space-2);
 }
 
 .composer__muted-overlay {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-tertiary);
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
   text-align: center;
 }
 
 .composer__muted-text {
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .composer__muted-link {
   font-size: var(--text-xs);
   color: var(--color-accent);
   text-decoration: underline;
+  font-weight: 500;
 }

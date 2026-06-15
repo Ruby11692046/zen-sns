@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { id: 'terms', label: '利用規約', icon: FileText },
 ];
 
-export default function Sidebar({ currentScreen, onNavigate, user, isOpen, onClose }) {
+export default function Sidebar({ currentScreen, onNavigate, user, isOpen, onClose, onLogout }) {
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`} id="sidebar">
       <div className="sidebar__inner">
@@ -31,7 +31,7 @@ export default function Sidebar({ currentScreen, onNavigate, user, isOpen, onClo
 
         {/* Logo */}
         <div className="sidebar__logo">
-          <span className="sidebar__logo-text">ZEN</span>
+          <span className="sidebar__logo-text">Mist</span>
         </div>
 
         {/* Account */}
@@ -78,7 +78,7 @@ export default function Sidebar({ currentScreen, onNavigate, user, isOpen, onClo
         </nav>
 
         {/* Logout */}
-        <button className="sidebar__logout" onClick={() => onNavigate('login')} id="sidebar-logout">
+        <button className="sidebar__logout" onClick={onLogout} id="sidebar-logout">
           <LogOut size={20} />
           <span>ログアウト</span>
         </button>

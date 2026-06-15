@@ -40,6 +40,13 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
+class UserDetailResponse(UserResponse):
+    following_count: int
+    followers_count: int
+    posts_count: int
+    is_following_by_me: bool = False
+    is_blocked_by_me: bool = False
+
 
 # --- Post Schemas ---
 class PostBase(BaseModel):

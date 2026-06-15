@@ -179,6 +179,7 @@ export default function App() {
         user={currentUser}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onLogout={handleLogout}
       />
 
       {/* Main */}

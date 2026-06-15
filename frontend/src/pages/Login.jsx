@@ -22,7 +22,13 @@ export default function Login({ onLogin }) {
       onLogin?.();
     } catch (err) {
       console.error(err);
-      setError('Googleログインに失敗しました。時間をおいて再度お試しください。');
+      if (err.response?.status === 403) {
+        setError('アクセス制限: 学内アカウント（@zen.ac.jpなど）のみ利用可能です。サインアウトして正しいアカウントを選択してください。');
+      } else if (err.response?.data?.detail) {
+        setError(`認証エラー: ${err.response.data.detail}`);
+      } else {
+        setError('Googleログインに失敗しました。時間をおいて再度お試しください。');
+      }
     } finally {
       setLoading(false);
     }
@@ -105,7 +111,7 @@ export default function Login({ onLogin }) {
       <div className="login__container">
         {/* Logo */}
         <div className="login__brand">
-          <h1 className="login__logo">ZEN</h1>
+          <h1 className="login__logo">Mist</h1>
           <p className="login__tagline">つながる、棲み分ける、楽しむ。</p>
         </div>
 
