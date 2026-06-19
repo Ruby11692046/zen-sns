@@ -15,6 +15,10 @@
   position: relative;
 }
 
+.post-card--menu-open {
+  z-index: 5 !important;
+}
+
 .post-card:hover {
   transform: translateY(-2px);
   box-shadow: 8px 8px 16px rgba(165, 175, 190, 0.45), -8px -8px 16px rgba(255, 255, 255, 0.95);
@@ -195,4 +199,61 @@
 
 .post-card__action--more:hover {
   color: var(--color-text-primary);
+}
+
+.post-card__more-container {
+  position: relative;
+  margin-left: auto;
+}
+
+.post-card__dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neu-flat);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.post-card__dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.post-card__dropdown-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.post-card__dropdown-item--danger {
+  color: var(--color-error);
+}
+
+.post-card__dropdown-item--danger:hover {
+  background: var(--color-like-light);
+}
+
+/* Auto Linkified Links */
+.post-card__text-link {
+  color: #0ea5e9;
+  text-decoration: underline;
+  word-break: break-all;
+  transition: color var(--transition-fast);
+}
+
+.post-card__text-link:hover {
+  color: #0284c7;
 }

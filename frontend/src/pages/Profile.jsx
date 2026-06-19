@@ -1,20 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Edit3, UserPlus, UserMinus } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { ArrowLeft, Edit3, UserPlus, UserMinus, Camera } from 'lucide-react';
 import PostCard from '../components/PostCard';
-import api from '../services/api';
+import api, { getMediaUrl } from '../services/api';
+import { processImage } from '../services/imageProcessor';
+import { usePostActions } from '../hooks/usePostActions';
+import { formatPost } from '../utils/postUtils';
 import './Profile.css';
 
 const PROFILE_TABS = [
   { id: 'posts', label: '投稿' },
-  { id: 'replies', label: '返信' },
+  // { id: 'replies', label: '返信' },
   { id: 'media', label: 'メディア' },
   { id: 'likes', label: 'いいね' },
 ];
 
-export default function Profile({ userId, onNavigate, onBack }) {
+export default function Profile({ userId: propUserId, onNavigate, onBack, user }) {
+  const { userId: paramUserId } = useParams();
+  const userId = propUserId !== undefined
+    ? propUserId
+    : (paramUserId !== undefined ? parseInt(paramUserId, 10) : undefined);
   const [activeTab, setActiveTab] = useState('posts');
   const [isEditing, setIsEditing] = useState(false);
   
+  // 編集用のステート
+  const [editName, setEditName] = useState('');
+  const [editBio, setEditBio] = useState('');
+  const [editAvatarUrl, setEditAvatarUrl] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+
   // APIから取得するプロフィール情報と投稿
   const [profile, setProfile] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
@@ -24,18 +38,35 @@ export default function Profile({ userId, onNavigate, onBack }) {
 
   // 現在表示しているのが自分自身かどうか
   const [isSelf, setIsSelf] = useState(false);
+  const [myId, setMyId] = useState(null);
+
+  // 共通アクションフック（いいね・リポスト・削除・ブロック・返信）
+  const handleAction = usePostActions({ posts: userPosts, setPosts: setUserPosts, onNavigate });
+
+  // 編集開始時に初期値をセット
+  useEffect(() => {
+    if (profile) {
+      Promise.resolve().then(() => {
+        setEditName(profile.name);
+        setEditBio(profile.bio || '');
+        setEditAvatarUrl(profile.avatar || '');
+      });
+    }
+  }, [profile, isEditing]);
 
   // プロフィール情報の取得
   const fetchProfile = useCallback(async () => {
+    await Promise.resolve();
     setLoading(true);
     setError(null);
     try {
       // 1. まず自分の情報を取得して自分自身か判定
       const meResponse = await api.get('/users/me');
-      const myId = meResponse.data.id;
-      const targetId = (userId === undefined || userId === null || userId === 0) ? myId : userId;
+      const currentMyId = meResponse.data.id;
+      setMyId(currentMyId);
+      const targetId = (userId === undefined || userId === null || userId === 0) ? currentMyId : userId;
       
-      const targetIsSelf = myId === targetId;
+      const targetIsSelf = currentMyId === targetId;
       setIsSelf(targetIsSelf);
 
       // 2. 対象ユーザーの詳細情報を取得
@@ -45,7 +76,7 @@ export default function Profile({ userId, onNavigate, onBack }) {
       setProfile({
         id: p.id,
         name: p.name,
-        userId: `@${p.email.split('@')[0]}`,
+        userId: `@${p.username || p.id}`,
         avatar: p.avatar_url,
         bio: p.bio,
         followingCount: p.following_count,
@@ -64,46 +95,37 @@ export default function Profile({ userId, onNavigate, onBack }) {
   // ユーザーの投稿一覧を取得
   const fetchUserPosts = useCallback(async () => {
     if (!profile) return;
+    await Promise.resolve();
     setPostsLoading(true);
     try {
-      const response = await api.get(`/users/${profile.id}/posts`);
-      const formatted = response.data.map((p) => ({
-        id: p.id,
-        content: p.content,
-        image: p.image_url,
-        createdAt: new Date(p.created_at).toLocaleString('ja-JP', {
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-        user: {
-          id: p.user.id,
-          name: p.user.name,
-          userId: `@${p.user.email.split('@')[0]}`,
-          avatar: p.user.avatar_url,
-        },
-        likes: p.likes_count,
-        reposts: p.reposts_count,
-        replies: p.replies_count,
-        isLiked: p.is_liked_by_me,
-        isReposted: p.is_reposted_by_me,
-      }));
-      setUserPosts(formatted);
+      let endpoint = `/users/${profile.id}/posts`;
+      if (activeTab === 'replies') {
+        endpoint = `/users/${profile.id}/replies`;
+      } else if (activeTab === 'media') {
+        endpoint = `/users/${profile.id}/media`;
+      } else if (activeTab === 'likes') {
+        endpoint = `/users/${profile.id}/likes`;
+      }
+      const response = await api.get(endpoint);
+      setUserPosts(response.data.map(formatPost));
     } catch (err) {
       console.error('Failed to fetch user posts:', err);
     } finally {
       setPostsLoading(false);
     }
-  }, [profile]);
+  }, [profile, activeTab]);
 
   useEffect(() => {
-    fetchProfile();
+    Promise.resolve().then(() => {
+      fetchProfile();
+    });
   }, [fetchProfile]);
 
   useEffect(() => {
     if (profile) {
-      fetchUserPosts();
+      Promise.resolve().then(() => {
+        fetchUserPosts();
+      });
     }
   }, [profile, fetchUserPosts]);
 
@@ -129,14 +151,76 @@ export default function Profile({ userId, onNavigate, onBack }) {
       }
     } catch (err) {
       console.error('Failed to toggle follow status:', err);
-      alert('フォロー状態の変更に失敗しました。');
+      window.showToast?.('フォロー状態の変更に失敗しました。', 'error');
     }
   };
 
-  // プロフィール編集の保存（仮実装、本格対応はチェックポイント3）
-  const handleEditSave = () => {
-    setIsEditing(false);
-    // TODO: PATCH /users/me のAPI接続
+  const handleAvatarSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const processed = await processImage(file);
+        setAvatarFile(processed);
+        // ローカルプレビューURLを作成
+        setEditAvatarUrl(URL.createObjectURL(processed));
+      } catch (err) {
+        console.error(err);
+        window.showToast?.("画像の処理に失敗しました。", "error");
+      }
+    }
+  };
+
+  // プロフィール編集の保存
+  const handleEditSave = async () => {
+    if (!editName || !editName.trim()) {
+      window.showToast?.('名前を入力してください。', 'error');
+      return;
+    }
+    if (editName.length > 20) {
+      window.showToast?.('名前は20文字以内で入力してください。', 'error');
+      return;
+    }
+    if (editBio && editBio.length > 500) {
+      window.showToast?.('自己紹介は500文字以内で入力してください。', 'error');
+      return;
+    }
+    try {
+      let finalAvatarUrl = editAvatarUrl;
+
+      // 新しいアバター画像がある場合は先にアップロード
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('file', avatarFile);
+        const uploadResponse = await api.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        finalAvatarUrl = uploadResponse.data.url;
+      }
+
+      // プロフィール更新APIの呼び出し
+      const updateResponse = await api.put('/users/me', {
+        name: editName,
+        bio: editBio,
+        avatar_url: finalAvatarUrl,
+      });
+
+      const updated = updateResponse.data;
+      setProfile((prev) => ({
+        ...prev,
+        name: updated.name,
+        bio: updated.bio,
+        avatar: updated.avatar_url,
+      }));
+
+      setIsEditing(false);
+      setAvatarFile(null);
+      window.showToast?.('プロフィールを更新しました。');
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      window.showToast?.('プロフィールの更新に失敗しました。', 'error');
+    }
   };
 
   if (loading) {
@@ -172,94 +256,126 @@ export default function Profile({ userId, onNavigate, onBack }) {
 
       {/* User info */}
       <div className="profile__info">
-        <div className="profile__info-top">
-          <div className="avatar avatar--xl profile__avatar">
-            {profile.avatar ? (
-              <img src={profile.avatar} alt={profile.name} />
-            ) : (
-              profile.name[0]
-            )}
-          </div>
-          <div className="profile__actions">
-            {isSelf ? (
-              <button
-                className="btn btn--secondary"
-                onClick={() => setIsEditing(!isEditing)}
-                id="profile-edit-btn"
-              >
-                <Edit3 size={16} />
-                <span>プロフィールを編集</span>
-              </button>
-            ) : (
-              <button
-                className={`btn ${profile.isFollowing ? 'btn--secondary' : 'btn--primary'}`}
-                onClick={handleFollowToggle}
-                id="profile-follow-btn"
-              >
-                {profile.isFollowing ? (
-                  <>
-                    <UserMinus size={16} />
-                    <span>フォロー中</span>
-                  </>
-                ) : (
-                  <>
-                    <UserPlus size={16} />
-                    <span>フォロー</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="profile__details">
-          <h2 className="profile__name">{profile.name}</h2>
-          <p className="profile__userid">{profile.userId}</p>
-
-          {isEditing ? (
-            <div className="profile__edit-form">
-              <input
-                className="input-field"
-                defaultValue={profile.name}
-                placeholder="名前"
-                id="profile-edit-name"
-              />
-              <textarea
-                className="input-field profile__edit-bio"
-                defaultValue={profile.bio}
-                placeholder="自己紹介"
-                rows={3}
-                id="profile-edit-bio"
-              />
-              <div className="profile__edit-actions">
-                <button
-                  className="btn btn--secondary btn--sm"
-                  onClick={() => setIsEditing(false)}
-                >
-                  キャンセル
-                </button>
-                <button
-                  className="btn btn--primary btn--sm"
-                  onClick={handleEditSave}
-                  id="profile-edit-save"
-                >
-                  保存
-                </button>
-              </div>
+        <div className="card profile__info-card">
+          <div className="profile__info-top">
+            <div className="avatar avatar--xl profile__avatar profile__avatar--editable">
+              {isEditing ? (
+                <label className="profile__avatar-edit-label" style={{ cursor: 'pointer', position: 'relative', display: 'block', width: '100%', height: '100%' }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={handleAvatarSelect}
+                  />
+                  {/* 小プレビューまたは現在のアバターを常に表示 */}
+                  {editAvatarUrl ? (
+                    <img src={editAvatarUrl.startsWith('blob:') ? editAvatarUrl : getMediaUrl(editAvatarUrl)} alt={profile.name} />
+                  ) : profile.avatar ? (
+                    <img src={getMediaUrl(profile.avatar)} alt={profile.name} />
+                  ) : (
+                    <img src="/default_avatar.png" alt={profile.name} />
+                  )}
+                  <div className="profile__avatar-edit-overlay">
+                    <Camera size={20} />
+                  </div>
+                </label>
+              ) : (
+                <img src={profile.avatar ? getMediaUrl(profile.avatar) : '/default_avatar.png'} alt={profile.name} />
+              )}
             </div>
-          ) : (
-            <p className="profile__bio">{profile.bio}</p>
-          )}
+            <div className="profile__actions">
+              {isSelf ? (
+                <button
+                  className="btn btn--secondary"
+                  onClick={() => setIsEditing(!isEditing)}
+                  id="profile-edit-btn"
+                >
+                  <Edit3 size={16} />
+                  <span>プロフィールを編集</span>
+                </button>
+              ) : (
+                <button
+                  className={`btn ${profile.isFollowing ? 'btn--secondary' : 'btn--primary'}`}
+                  onClick={handleFollowToggle}
+                  id="profile-follow-btn"
+                >
+                  {profile.isFollowing ? (
+                    <>
+                      <UserMinus size={16} />
+                      <span>フォロー中</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus size={16} />
+                      <span>フォロー</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
 
-          <div className="profile__stats">
-            <button className="profile__stat">
-              <span className="profile__stat-value">{profile.followingCount}</span>
-              <span className="profile__stat-label">フォロー中</span>
-            </button>
-            <button className="profile__stat">
-              <span className="profile__stat-value">{profile.followersCount}</span>
-              <span className="profile__stat-label">フォロワー</span>
-            </button>
+          <div className="profile__details">
+            <h2 className="profile__name">{profile.name}</h2>
+            <p className="profile__userid">{profile.userId}</p>
+
+            {isEditing ? (
+              <div className="profile__edit-form">
+                <input
+                  className="input-field"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="名前"
+                  maxLength={20}
+                  id="profile-edit-name"
+                />
+                <textarea
+                  className="input-field profile__edit-bio"
+                  value={editBio}
+                  onChange={(e) => setEditBio(e.target.value)}
+                  placeholder="自己紹介"
+                  rows={3}
+                  maxLength={500}
+                  id="profile-edit-bio"
+                />
+                <div className="profile__edit-actions">
+                  <button
+                    className="btn btn--secondary btn--sm"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    className="btn btn--primary btn--sm"
+                    onClick={handleEditSave}
+                    id="profile-edit-save"
+                  >
+                    保存
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="profile__bio">{profile.bio}</p>
+            )}
+
+            <div className="profile__stats">
+              <button
+                className="profile__stat"
+                onClick={() => onNavigate('relations', { userId: profile.id, tab: 'following' })}
+                id="profile-stat-following"
+              >
+                <span className="profile__stat-value">{profile.followingCount}</span>
+                <span className="profile__stat-label">フォロー中</span>
+              </button>
+              <button
+                className="profile__stat"
+                onClick={() => onNavigate('relations', { userId: profile.id, tab: 'followers' })}
+                id="profile-stat-followers"
+              >
+                <span className="profile__stat-value">{profile.followersCount}</span>
+                <span className="profile__stat-label">フォロワー</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -284,37 +400,22 @@ export default function Profile({ userId, onNavigate, onBack }) {
           <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--color-text-secondary)' }}>
             読み込み中...
           </div>
-        ) : activeTab === 'posts' && userPosts.length === 0 ? (
-          <div className="profile__empty">
-            <p>投稿はまだありません</p>
-          </div>
-        ) : activeTab === 'posts' ? (
-          userPosts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onUserClick={(uid) => onNavigate('profile', { userId: uid })}
-              onPostClick={(pid) => onNavigate('postDetail', { postId: pid })}
-              onAction={async (type, pid) => {
-                // タイムライン同様のアクション処理を一部適用
-                if (type === 'more' && isSelf) {
-                  if (window.confirm('この投稿を削除しますか？')) {
-                    try {
-                      await api.delete(`/posts/${pid}`);
-                      setUserPosts((prev) => prev.filter((p) => p.id !== pid));
-                    } catch (err) {
-                      console.error(err);
-                      alert('削除に失敗しました。');
-                    }
-                  }
-                }
-              }}
-            />
-          ))
-        ) : (
+        ) : userPosts.length === 0 ? (
           <div className="profile__empty">
             <p>{PROFILE_TABS.find((t) => t.id === activeTab).label}はまだありません</p>
           </div>
+        ) : (
+          userPosts.map((post) => (
+            <PostCard
+              key={post.repostedBy ? `${post.id}_repost_${post.repostedBy}` : String(post.id)}
+              post={post}
+              currentUserId={myId}
+              isAdmin={user?.is_admin}
+              onUserClick={(uid) => onNavigate('profile', { userId: uid })}
+              onPostClick={(pid) => onNavigate('postDetail', { postId: pid })}
+              onAction={handleAction}
+            />
+          ))
         )}
       </div>
     </div>

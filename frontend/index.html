@@ -3,12 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Mist - つながる、棲み分ける、楽しむ。学生のためのソーシャルネットワーク" />
     <meta name="theme-color" content="#6366f1" />
     <title>Mist</title>
     <!-- Google Identity Services SDK -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+      html {
+        background-color: #eef2f7;
+      }
+      html[data-theme="dark"] {
+        background-color: #121824;
+      }
+      html[data-theme="light"] {
+        background-color: #eef2f7;
+      }
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]) {
+          background-color: #121824;
+        }
+      }
+    </style>
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('zen-theme') || 'system';
+        let isDark = savedTheme === 'dark';
+        if (savedTheme === 'system') {
+          isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

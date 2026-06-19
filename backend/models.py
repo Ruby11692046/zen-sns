@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Table, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Table, UniqueConstraint, LargeBinary
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -13,6 +13,7 @@ class User(Base):
     google_id = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
+    username = Column(String, unique=True, index=True, nullable=True)  # @ハンドル (例: user_123)
     avatar_url = Column(String, nullable=True)
     bio = Column(Text, nullable=True, default="")
     is_muted = Column(Boolean, default=False, nullable=False)
@@ -154,3 +155,26 @@ class Notification(Base):
 
     # リレーションシップ
     post = relationship("Post", back_populates="notifications")
+    # 通知の送信者（N+1クエリ解消のためjoinedloadで一括取得できるよう定義）
+    sender = relationship(
+        "User",
+        foreign_keys=[sender_id],
+        primaryjoin="Notification.sender_id == User.id"
+    )
+
+
+class Media(Base):
+    """
+    画像データをデータベースに保存するためのモデル。
+    """
+    __tablename__ = "media"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    filename = Column(String, unique=True, index=True, nullable=False) # アクセス用URLキー (UUID)
+    original_filename = Column(String, nullable=False)                 # 元のファイル名
+    mime_type = Column(String, nullable=False)                         # MIMEタイプ (image/png等)
+    data = Column(LargeBinary, nullable=False)                         # バイナリデータ
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+
+    def __repr__(self):
+        return f"<Media id={self.id} filename={self.filename}>"

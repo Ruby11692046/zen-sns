@@ -1,5 +1,6 @@
 import datetime
-from fastapi import APIRouter, Depends, HTTPException, status
+import os
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User, RefreshToken
@@ -26,6 +27,12 @@ def login_google(body: GoogleLoginRequest, db: Session = Depends(get_db)):
     # 開発環境向け：デバッグやテストを容易にするためのダミートークン対応
     # credential が "test-user-id" 等で始まる場合は、ダミーログインとして扱う
     if credential.startswith("test_"):
+        # 本番環境ではテストログイン（バックドア）を絶対に禁止する
+        if os.getenv("ENV") == "production":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Test login is not allowed in production environment"
+            )
         # ダミーのユーザー情報を作成
         user_id_str = credential.replace("test_", "", 1)
         google_id = f"test_google_{user_id_str}"
@@ -52,23 +59,28 @@ def login_google(body: GoogleLoginRequest, db: Session = Depends(get_db)):
     
     if not user:
         # 新規作成（会員登録フロー）
-        # 要件定義: 「初回ログイン時はサーバー側でDBの連番IDをユーザーIDとして自動採番し、新規ユーザーを作成。初期表示名はユーザーID、アイコンはなし（空）」
-        # 一旦プレースホルダーで作成し、ID決定後に更新する
         user = User(
             google_id=google_id,
             email=email,
-            name="TemporaryName",  # 後でID付きに更新
-            avatar_url=None,       # アイコンはなし（空）
+            name="TemporaryName",  # 後でID決定後に更新
+            avatar_url=None,
             bio=""
         )
         db.add(user)
         db.commit()
         db.refresh(user)
         
-        # 初期表示名は「ユーザーID」にする (例: "User 123" または単に "123")
+        # 初期表示名・ユーザーネームをIDベースで設定
         user.name = f"User {user.id}"
+        user.username = str(user.id)
         db.commit()
         db.refresh(user)
+    else:
+        # 既存ユーザーでusernameが未設定の場合は設定する（マイグレーション対応）
+        if not user.username:
+            user.username = str(user.id)
+            db.commit()
+            db.refresh(user)
         
     # トークンの生成
     access_token = create_access_token(subject=str(user.id))
@@ -96,11 +108,14 @@ def login_google(body: GoogleLoginRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/refresh", response_model=Token)
-def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
+def refresh_token(
+    token_str: str = Query(alias="refresh_token"),
+    db: Session = Depends(get_db)
+):
     """
     アクセストークンをリフレッシュするエンドポイント
     """
-    user_id = verify_refresh_token(refresh_token)
+    user_id = verify_refresh_token(token_str)
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -110,7 +125,7 @@ def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
     # DB内でトークンの存在を確認
     db_token = db.query(RefreshToken).filter(
         RefreshToken.user_id == int(user_id),
-        RefreshToken.token == refresh_token
+        RefreshToken.token == token_str
     ).first()
     
     if not db_token or db_token.expires_at < datetime.datetime.utcnow():
@@ -139,11 +154,14 @@ def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
 
 
 @router.post("/logout")
-def logout(refresh_token: str, db: Session = Depends(get_db)):
+def logout(
+    token_str: str = Query(alias="refresh_token"),
+    db: Session = Depends(get_db)
+):
     """
     ログアウト処理（リフレッシュトークンの破棄）
     """
-    db_token = db.query(RefreshToken).filter(RefreshToken.token == refresh_token).first()
+    db_token = db.query(RefreshToken).filter(RefreshToken.token == token_str).first()
     if db_token:
         db.delete(db_token)
         db.commit()

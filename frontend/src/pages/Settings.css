@@ -3,7 +3,7 @@
    ======================================== */
 
 .settings {
-  background: var(--color-bg-primary);
+  background: transparent;
   min-height: 100dvh;
 }
 
@@ -26,29 +26,31 @@
 .settings__theme-options {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
 .settings__theme-option {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   width: 100%;
-  padding: var(--space-3.5) var(--space-4);
-  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-xl);
   background: var(--color-bg-secondary);
   box-shadow: var(--shadow-neu-flat-sm);
   border: 1px solid var(--color-border);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   transition: all var(--transition-base);
   text-align: left;
+  min-height: 60px;
 }
 
 .settings__theme-option:hover {
-  color: var(--color-text-primary);
-  transform: translateY(-1px);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  transform: translateY(1px);
 }
 
 .settings__theme-option.active {
@@ -61,8 +63,8 @@
 
 /* Neumorphic Radio Circle (pressed by default, pops inner dot when active) */
 .settings__radio {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
   background: var(--color-bg-secondary);
   box-shadow: var(--shadow-neu-pressed-sm);
@@ -82,8 +84,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: var(--radius-full);
   background: var(--color-accent-gradient);
   animation: scaleIn var(--transition-fast) ease-out;
@@ -94,21 +96,23 @@
 .settings__logout-btn {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   width: 100%;
-  padding: var(--space-3.5) var(--space-4);
-  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-xl);
   background: var(--color-bg-secondary);
   box-shadow: var(--shadow-neu-flat-sm);
   border: 1px solid var(--color-border);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-error);
   transition: all var(--transition-base);
   text-align: left;
+  min-height: 60px;
 }
 
 .settings__logout-btn:hover {
   box-shadow: var(--shadow-neu-pressed-sm);
   background: rgba(239, 68, 68, 0.02);
+  transform: translateY(1px);
 }

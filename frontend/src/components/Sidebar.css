@@ -213,6 +213,7 @@
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     border-right: none;
+    z-index: calc(var(--z-nav) + 10);
   }
 
   .sidebar.open {
@@ -221,6 +222,10 @@
 
   .sidebar__close {
     display: flex;
+  }
+
+  .sidebar__inner {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--space-6));
   }
 }
 

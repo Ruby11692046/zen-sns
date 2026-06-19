@@ -113,4 +113,14 @@ api.interceptors.response.use(
   }
 );
 
+export const getMediaUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  // /static/ で始まる相対パスをバックエンドのベースURLと結合
+  const backendBase = import.meta.env.VITE_MEDIA_URL || 'http://localhost:8000';
+  return `${backendBase}${path}`;
+};
+
 export default api;

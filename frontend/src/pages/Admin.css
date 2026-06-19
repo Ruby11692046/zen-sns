@@ -1,0 +1,121 @@
+.admin {
+  background: transparent;
+  min-height: 100dvh;
+}
+
+.admin__content {
+  padding: var(--space-4);
+}
+
+.admin__card {
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.admin__section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.admin__status {
+  text-align: center;
+  padding: var(--space-12) 0;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.admin__status--error {
+  color: var(--color-error);
+}
+
+.admin__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-tertiary);
+}
+
+.admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--text-sm);
+}
+
+.admin__table th {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(0, 0, 0, 0.02);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.admin__table td {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-divider);
+  vertical-align: middle;
+}
+
+.admin__tr:last-child td {
+  border-bottom: none;
+}
+
+.admin__user-cell {
+  display: flex;
+  flex-direction: column;
+  max-width: 130px;
+}
+
+.admin__user-name {
+  font-weight: 600;
+}
+
+.admin__user-handle {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.admin__email {
+  display: block;
+  max-width: 150px;
+  color: var(--color-text-secondary);
+}
+
+.admin__status-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.admin__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin__badge--admin {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.admin__badge--user {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-secondary);
+}
+
+.admin__badge--muted {
+  background: var(--color-like-light);
+  color: var(--color-error);
+}

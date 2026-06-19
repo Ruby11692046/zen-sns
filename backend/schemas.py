@@ -20,6 +20,7 @@ class GoogleLoginRequest(BaseModel):
 class UserBase(BaseModel):
     email: EmailStr
     name: str
+    username: Optional[str] = None
     avatar_url: Optional[str] = None
     bio: Optional[str] = ""
 
@@ -28,6 +29,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
+    username: Optional[str] = None
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
 
@@ -67,6 +69,7 @@ class PostResponse(PostBase):
     replies_count: int
     is_liked_by_me: bool = False
     is_reposted_by_me: bool = False
+    reposted_by: Optional[str] = None
 
     class Config:
         from_attributes = True

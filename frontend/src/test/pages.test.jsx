@@ -9,6 +9,7 @@ import Notifications from '../pages/Notifications';
 import Settings from '../pages/Settings';
 import Report from '../pages/Report';
 import Terms from '../pages/Terms';
+import Relations from '../pages/Relations';
 import { CURRENT_USER } from '../data/mockData';
 
 // ============================================================
@@ -216,7 +217,18 @@ describe('Terms', () => {
 
   it('規約本文が表示される', () => {
     render(<Terms />);
-    expect(screen.getByText('ZEN SNS 利用規約')).toBeInTheDocument();
+    expect(screen.getByText('Mist 利用規約')).toBeInTheDocument();
     expect(screen.getByText('第1条（目的）')).toBeInTheDocument();
+  });
+});
+
+// ============================================================
+// Relations Page Tests
+// ============================================================
+describe('Relations', () => {
+  it('ヘッダーやタブなどの基本UIが正しく表示される', () => {
+    // 読み込み中表示になることを検証（非同期ロードが発生するため初期状態はローディング）
+    render(<Relations defaultTab="following" onNavigate={() => {}} onBack={() => {}} userId={1} />);
+    expect(screen.getByText('読み込み中...')).toBeInTheDocument();
   });
 });

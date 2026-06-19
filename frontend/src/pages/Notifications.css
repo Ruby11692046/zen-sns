@@ -3,7 +3,7 @@
    ======================================== */
 
 .notifications {
-  background: var(--color-bg-primary);
+  background: transparent;
   min-height: 100dvh;
 }
 

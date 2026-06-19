@@ -1,23 +1,41 @@
 import { useState } from 'react';
 import { ImagePlus, Send, X, AlertTriangle } from 'lucide-react';
+import { processImage } from '../services/imageProcessor';
+import { getMediaUrl } from '../services/api';
 import './Composer.css';
 
 export default function Composer({ user, isMuted, onSubmit }) {
   const [text, setText] = useState('');
-  const [imageName, setImageName] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
-  const handleImageSelect = (e) => {
+  const handleImageSelect = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageName(file.name);
+      try {
+        const processed = await processImage(file);
+        setImageFile(processed);
+        setImagePreview(URL.createObjectURL(processed));
+      } catch (err) {
+        console.error("Failed to process image:", err);
+        window.showToast?.("画像の処理に失敗しました。", "error");
+      }
     }
   };
 
+  const handleRemoveImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
   const handleSubmit = () => {
-    if (!text.trim() && !imageName) return;
-    onSubmit?.({ text: text.trim(), image: imageName });
+    if (!text.trim() && !imageFile) return;
+    onSubmit?.({ text: text.trim(), imageFile });
     setText('');
-    setImageName(null);
+    handleRemoveImage();
   };
 
   const handleKeyDown = (e) => {
@@ -50,11 +68,7 @@ export default function Composer({ user, isMuted, onSubmit }) {
   return (
     <div className="composer" id="composer">
       <div className="avatar composer__avatar">
-        {user?.avatar ? (
-          <img src={user.avatar} alt={user.name} />
-        ) : (
-          user?.name?.[0] || '?'
-        )}
+        <img src={(user?.avatar_url || user?.avatar) ? getMediaUrl(user.avatar_url || user.avatar) : '/default_avatar.png'} alt={user?.name || 'User'} />
       </div>
       <div className="composer__input-area">
         <textarea
@@ -63,15 +77,18 @@ export default function Composer({ user, isMuted, onSubmit }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
+          maxLength={300}
           rows={1}
           id="composer-textarea"
         />
-        {imageName && (
+        {imagePreview && (
           <div className="composer__image-preview">
-            <span className="composer__image-name truncate">📎 {imageName}</span>
+            <div className="composer__image-container">
+              <img src={imagePreview} alt="アップロードプレビュー" />
+            </div>
             <button
               className="composer__image-remove"
-              onClick={() => setImageName(null)}
+              onClick={handleRemoveImage}
               aria-label="画像を削除"
             >
               <X size={14} />
@@ -84,19 +101,26 @@ export default function Composer({ user, isMuted, onSubmit }) {
             <input
               type="file"
               accept="image/*"
-              className="sr-only"
+              style={{ display: 'none' }}
               onChange={handleImageSelect}
             />
           </label>
-          <button
-            className="btn btn--primary btn--sm composer__submit"
-            onClick={handleSubmit}
-            disabled={!text.trim() && !imageName}
-            id="composer-submit"
-          >
-            <Send size={14} />
-            <span>投稿</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {text.length > 0 && (
+              <span className={`composer__counter ${text.length >= 280 ? 'warning' : ''}`} style={{ fontSize: '0.75rem', color: text.length >= 280 ? 'var(--color-accent)' : 'var(--color-text-secondary)', transition: 'color 0.2s' }}>
+                {text.length}/300
+              </span>
+            )}
+            <button
+              className="btn btn--primary btn--sm composer__submit"
+              onClick={handleSubmit}
+              disabled={(!text.trim() && !imageFile) || text.length > 300}
+              id="composer-submit"
+            >
+              <Send size={14} />
+              <span>投稿</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

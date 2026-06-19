@@ -3,7 +3,7 @@
    ======================================== */
 
 .timeline {
-  background: var(--color-bg-secondary);
+  background: transparent;
   min-height: 100dvh;
 }
 
@@ -21,6 +21,8 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: 0.05em;
+  /* メディアクエリでダークモードの障害技全检別 */
+  text-rendering: optimizeLegibility;
 }
 
 .page-header__menu-btn {
@@ -57,7 +59,7 @@
 
 /* Feed */
 .timeline__feed {
-  /* No extra styles needed, PostCard handles borders */
+  background: transparent;
 }
 
 /* Hide hamburger on desktop */
@@ -65,4 +67,42 @@
   .page-header__menu-btn {
     display: none;
   }
+}
+
+/* Neumorphic Timeline Status Panels */
+.timeline__status-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-neu-flat);
+  border: 1px solid var(--color-border);
+  margin: var(--space-6) var(--space-4);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: var(--text-base);
+  text-align: center;
+  animation: screenFadeIn var(--transition-base) ease-out;
+}
+
+.timeline__status-panel--loading {
+  box-shadow: var(--shadow-neu-pressed-sm);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.timeline__status-panel--error {
+  color: var(--color-error);
+  border-color: rgba(239, 68, 68, 0.15);
+  box-shadow: var(--shadow-neu-flat-sm);
+}
+
+.timeline__status-panel--empty {
+  color: var(--color-text-tertiary);
+  box-shadow: var(--shadow-neu-pressed-sm);
+  background: var(--color-bg-tertiary);
 }

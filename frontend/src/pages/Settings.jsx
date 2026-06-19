@@ -8,7 +8,7 @@ const THEME_OPTIONS = [
   { id: 'dark', label: 'ダークモード', icon: Moon },
 ];
 
-export default function Settings({ onNavigate, onLogout }) {
+export default function Settings({ onLogout }) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('zen-theme') || 'system';
   });
@@ -17,18 +17,37 @@ export default function Settings({ onNavigate, onLogout }) {
     localStorage.setItem('zen-theme', theme);
     const root = document.documentElement;
 
-    if (theme === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-    } else if (theme === 'light') {
-      root.removeAttribute('data-theme');
-    } else {
-      // system
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
+    const applyTheme = (t) => {
+      if (t === 'dark') {
         root.setAttribute('data-theme', 'dark');
+      } else if (t === 'light') {
+        root.setAttribute('data-theme', 'light');
       } else {
-        root.removeAttribute('data-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          root.setAttribute('data-theme', 'dark');
+        } else {
+          root.setAttribute('data-theme', 'light');
+        }
       }
+    };
+
+    applyTheme(theme);
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e) => {
+        if (e.matches) {
+          root.setAttribute('data-theme', 'dark');
+        } else {
+          root.setAttribute('data-theme', 'light');
+        }
+      };
+      
+      mediaQuery.addEventListener('change', handleChange);
+      return () => {
+        mediaQuery.removeEventListener('change', handleChange);
+      };
     }
   }, [theme]);
 

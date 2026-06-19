@@ -5,12 +5,20 @@ import jwt
 import requests
 from fastapi import HTTPException, status
 
-# JWT設定（環境変数から読み込み、デフォルト値を用意）
-JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-key-change-in-production")
-JWT_REFRESH_SECRET = os.getenv("JWT_REFRESH_SECRET", "super-refresh-secret-key-change-in-production")
+# JWT設定
+JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_REFRESH_SECRET = os.getenv("JWT_REFRESH_SECRET")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1日
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 1時間 (1日から短縮してセキュリティ強化)
 REFRESH_TOKEN_EXPIRE_DAYS = 30  # 30日
+
+# 環境変数の検証ガード（本番環境では例外、開発環境ではフォールバック）
+if not JWT_SECRET or not JWT_REFRESH_SECRET:
+    if os.getenv("ENV") == "production":
+        raise RuntimeError("JWT_SECRET and JWT_REFRESH_SECRET must be set in production environment")
+    else:
+        JWT_SECRET = JWT_SECRET or "super-secret-key-change-in-production"
+        JWT_REFRESH_SECRET = JWT_REFRESH_SECRET or "super-refresh-secret-key-change-in-production"
 
 
 def create_access_token(subject: str, expires_delta: Optional[datetime.timedelta] = None) -> str:

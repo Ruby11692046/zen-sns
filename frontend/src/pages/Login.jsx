@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { authService } from '../services/authService';
 import './Login.css';
 
@@ -14,7 +14,7 @@ export default function Login({ onLogin }) {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   // Google認証成功時のコールバック
-  const handleCredentialResponse = async (response) => {
+  const handleCredentialResponse = useCallback(async (response) => {
     setLoading(true);
     setError(null);
     try {
@@ -32,7 +32,7 @@ export default function Login({ onLogin }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onLogin]);
 
   useEffect(() => {
     // クライアントIDが設定されていない場合はGoogleログインの初期化を行わない
@@ -79,7 +79,7 @@ export default function Login({ onLogin }) {
         script.addEventListener('load', initializeGoogleSignIn);
       }
     }
-  }, [GOOGLE_CLIENT_ID]);
+  }, [GOOGLE_CLIENT_ID, handleCredentialResponse]);
 
   // テストアカウントログインのハンドラー
   const handleTestLoginSubmit = async (e) => {
@@ -112,7 +112,7 @@ export default function Login({ onLogin }) {
         {/* Logo */}
         <div className="login__brand">
           <h1 className="login__logo">Mist</h1>
-          <p className="login__tagline">つながる、棲み分ける、楽しむ。</p>
+          <p className="login__tagline">日常の呟きを共有しよう</p>
         </div>
 
         {/* Card */}

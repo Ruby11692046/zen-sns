@@ -1,7 +1,27 @@
+import { useState, useEffect, useRef } from 'react';
 import { Heart, Repeat2, MessageCircle, MoreHorizontal } from 'lucide-react';
+import { getMediaUrl } from '../services/api';
+import { renderContentWithLinks } from '../utils/linkify';
 import './PostCard.css';
 
-export default function PostCard({ post, onUserClick, onPostClick, onAction }) {
+export default function PostCard({ post, currentUserId, isAdmin, onUserClick, onPostClick, onAction }) {
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    }
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
+
   const handleLike = (e) => {
     e.stopPropagation();
     onAction?.('like', post.id);
@@ -16,12 +36,21 @@ export default function PostCard({ post, onUserClick, onPostClick, onAction }) {
   };
   const handleMore = (e) => {
     e.stopPropagation();
-    onAction?.('more', post.id);
+    setShowMenu(!showMenu);
   };
+
+  const handleMenuAction = (type, e) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    onAction?.(type, post.id);
+  };
+
+  const isMyPost = post.user?.id === currentUserId;
+  const canDelete = isMyPost || isAdmin;
 
   return (
     <article
-      className="post-card"
+      className={`post-card ${showMenu ? 'post-card--menu-open' : ''}`}
       onClick={() => onPostClick?.(post.id)}
       id={`post-card-${post.id}`}
     >
@@ -43,11 +72,10 @@ export default function PostCard({ post, onUserClick, onPostClick, onAction }) {
           }}
           aria-label={`${post.user?.name}のプロフィール`}
         >
-          {post.user?.avatar ? (
-            <img src={post.user.avatar} alt={post.user.name} />
-          ) : (
-            post.user?.name?.[0] || '?'
-          )}
+          <img
+            src={post.user?.avatar ? getMediaUrl(post.user.avatar) : '/default_avatar.png'}
+            alt={post.user?.name || 'User'}
+          />
         </button>
 
         {/* Content */}
@@ -68,12 +96,12 @@ export default function PostCard({ post, onUserClick, onPostClick, onAction }) {
           </div>
 
           {/* Text */}
-          <p className="post-card__text">{post.content}</p>
+          <p className="post-card__text">{renderContentWithLinks(post.content)}</p>
 
           {/* Image */}
           {post.image && (
             <div className="post-card__image">
-              <img src={post.image} alt="投稿画像" />
+              <img src={getMediaUrl(post.image)} alt="投稿画像" />
             </div>
           )}
 
@@ -103,13 +131,35 @@ export default function PostCard({ post, onUserClick, onPostClick, onAction }) {
               <Heart size={18} fill={post.isLiked ? 'currentColor' : 'none'} />
               {post.likes > 0 && <span>{post.likes}</span>}
             </button>
-            <button
-              className="post-card__action post-card__action--more"
-              onClick={handleMore}
-              aria-label="その他"
-            >
-              <MoreHorizontal size={18} />
-            </button>
+            <div className="post-card__more-container" ref={menuRef}>
+              <button
+                className="post-card__action post-card__action--more"
+                onClick={handleMore}
+                aria-label="その他"
+              >
+                <MoreHorizontal size={18} />
+              </button>
+              {showMenu && (
+                <div className="post-card__dropdown-menu">
+                  {canDelete && (
+                    <button
+                      className="post-card__dropdown-item post-card__dropdown-item--danger"
+                      onClick={(e) => handleMenuAction('delete', e)}
+                    >
+                      削除する
+                    </button>
+                  )}
+                  {!isMyPost && (
+                    <button
+                      className="post-card__dropdown-item post-card__dropdown-item--danger"
+                      onClick={(e) => handleMenuAction('block', e)}
+                    >
+                      ブロック
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
